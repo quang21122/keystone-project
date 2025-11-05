@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { DocumentRenderer } from '@keystone-6/document-renderer';
+import { DocumentRenderer, type DocumentRendererProps } from '@keystone-6/document-renderer';
+
+interface Post {
+  id: string;
+  title: string;
+  content: {
+    document: DocumentRendererProps['document'];
+  };
+  author: {
+    name: string;
+  };
+}
 
 export default function App() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/graphql', {
@@ -16,6 +27,9 @@ export default function App() {
               title
               content {
                 document
+              }
+              author {
+                name
               }
             }
           }
@@ -57,8 +71,11 @@ export default function App() {
                 <h3 className="text-xl font-bold text-gray-800 mb-2 hover:text-blue-600 transition-colors">
                   {post.title}
                 </h3>
-                <div className="prose prose-gray max-w-none line-clamp-5">
+                <div className='text-black'>
                   <DocumentRenderer document={post.content.document} />
+                </div>
+                <div className="text-black">
+                  {post.author.name}
                 </div>
               </article>
             ))
